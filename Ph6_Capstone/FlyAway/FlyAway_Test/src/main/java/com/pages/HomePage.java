@@ -2,7 +2,6 @@ package com.pages;
 
 import static org.testng.Assert.assertTrue;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -15,8 +14,8 @@ public class HomePage {
         WebDriver driver;
         String URL = "http://localhost:8080/FlyAway/home";
 
-        @FindBy(xpath = "//h3[normalize-space()='FLYAWAY HOMEPAGE']")
-        private WebElement homePagePresent;
+        @FindBy(xpath = "//h3")
+        private WebElement HomePageHeader;
 
         @FindBy(xpath = "//a[normalize-space()='Home']")
         private WebElement HomeLink;
@@ -41,13 +40,15 @@ public class HomePage {
                 PageFactory.initElements(driver, this);
                 this.driver = driver;
                 driver.get(URL);
-
-                WebDriverWait wait = new WebDriverWait(driver, 30);
-                wait.until(ExpectedConditions.visibilityOf(homePagePresent));
-
-                System.out.println("Home Page Present");
-
         }
+        
+        public String GetHeading() {
+            WebDriverWait wait = new WebDriverWait(driver, 30);
+            wait.until(ExpectedConditions.visibilityOf(HomePageHeader));
+            System.out.println("Home Page Heading is : " + HomePageHeader.getText());
+            return HomePageHeader.getText();
+		}
+
 
         public void EnterSource(String Source){
                 Select srcSelect = new Select(SrcSelector);

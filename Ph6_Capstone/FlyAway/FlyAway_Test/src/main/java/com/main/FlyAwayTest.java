@@ -2,10 +2,10 @@ package com.main;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 import com.pages.HomePage;
@@ -30,12 +30,19 @@ public class FlyAwayTest {
             }
 
             driver = new ChromeDriver();
-            homepg = new HomePage(driver);
 //          Thread.sleep(2000);
     }
     
     @Test
-    private void ASearchAndBookNoLogin() throws InterruptedException {
+    private void CheckHomePageHeading() {
+    	String homePgHeading = "FLYAWAY HOMEPAGE";
+    	
+        homepg = new HomePage(driver);        ;
+        Assert.assertEquals(homepg.GetHeading(), homePgHeading);
+	}
+    
+    @Test(dependsOnMethods = { "CheckHomePageHeading" })
+    private void SearchAndBookNoLogin() throws InterruptedException {
             homepg.EnterSource("Bangalore");
             homepg.EnterDestination("Hyderabad");
             homepg.ClickSubmit();
@@ -43,8 +50,8 @@ public class FlyAwayTest {
             homepg.CheckForError();
     }
 
-    @Test(dependsOnMethods = { "ASearchAndBookNoLogin" })
-    private void SLoginUsingValidDetails() throws InterruptedException {
+    @Test(dependsOnMethods = { "SearchAndBookNoLogin" })
+    private void LoginUsingValidDetails() throws InterruptedException {
             homepg.clickLoginSignUp();
             LoginPage logPage = new LoginPage(driver);
 
@@ -52,7 +59,7 @@ public class FlyAwayTest {
             logPage.clickHome();
     }
 
-    @Test(dependsOnMethods = { "SLoginUsingValidDetails" })
+    @Test(dependsOnMethods = { "LoginUsingValidDetails" })
     private void SearchAndBookWithLogin1() throws InterruptedException {
             homepg.EnterSource("Bangalore");
             homepg.EnterDestination("Chennai");
@@ -66,15 +73,6 @@ public class FlyAwayTest {
             homepg.clickHome();
             homepg.EnterSource("Bangalore");
             homepg.EnterDestination("Hyderabad");
-            homepg.ClickSubmit();
-            homepg.ClickBookFlight();
-    }
-
-    @Test(dependsOnMethods = { "SearchAndBookWithLogin2" })
-    private void SearchAndBookWithLogin3() throws InterruptedException {
-            homepg.clickHome();
-            homepg.EnterSource("Bangalore");
-            homepg.EnterDestination("Chennai");
             homepg.ClickSubmit();
             homepg.ClickBookFlight();
             homepg.CheckForNoError();
